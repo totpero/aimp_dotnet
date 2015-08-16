@@ -34,16 +34,23 @@ namespace AIMP.SDK
 
         private static Assembly CurrentDomainAssemblyResolve(object sender, ResolveEventArgs args)
         {
-            string projectDir = Path.GetDirectoryName(curPath);
-            string shortAssemblyName = args.Name.Substring(0, args.Name.IndexOf(','));
-            string fileName = Path.Combine(projectDir, shortAssemblyName + ".dll");
-            if (File.Exists(fileName))
+            try
             {
-                Assembly result = Assembly.LoadFrom(fileName);
-                return result;
+                string projectDir = Path.GetDirectoryName(curPath);
+                string shortAssemblyName = args.Name.Substring(0, args.Name.IndexOf(','));
+                string fileName = Path.Combine(projectDir, shortAssemblyName + ".dll");
+                if (File.Exists(fileName))
+                {
+                    Assembly result = Assembly.LoadFrom(fileName);
+                    return result;
+                }
+
+                return Assembly.GetExecutingAssembly().FullName == args.Name ? Assembly.GetExecutingAssembly() : null;
             }
-            
-            return Assembly.GetExecutingAssembly().FullName == args.Name ? Assembly.GetExecutingAssembly() : null;
+            catch (Exception)
+            {
+                return Assembly.Load(args.Name);
+            }
         }
     }
 }

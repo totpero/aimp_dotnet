@@ -24,7 +24,8 @@ namespace AIMP
 
 		/// <summary>
 		/// Managed Core class.
-		/// </summary>
+		/// </summary
+		[System::Serializable]
 		public ref class ManagedAimpCore : public IAimpCore
 		{		
 			

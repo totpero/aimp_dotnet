@@ -141,7 +141,11 @@ namespace AIMP.SDK
                 AppDomainSetup domainSet = new AppDomainSetup { ApplicationBase = path };
                 loadDomain = AppDomain.CreateDomain("PluginLoadDomain" + new Guid().ToString().GetHashCode().ToString("x"), null, domainSet);
 
+                var l = loadDomain.GetAssemblies();
+
                 PluginLoadingStrategy strat = (PluginLoadingStrategy)loadDomain.CreateInstanceAndUnwrap(Assembly.GetExecutingAssembly().FullName, LoadStrategyType.FullName);
+
+                l = loadDomain.GetAssemblies();
 
                 PluginShortInfoForLoad[] res = strat.Load(path);
                 foreach (PluginShortInfoForLoad cInf in res)

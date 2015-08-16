@@ -59,7 +59,7 @@ namespace AIMP
 		String^ ManagedAimpCore::GetPath(AIMP::SDK::AimpMessages::AimpCorePathType pathType)
 		{
 			AIMP36SDK::IAIMPString* res;
-
+			System::Diagnostics::Debug::WriteLine(System::AppDomain::CurrentDomain->FriendlyName);
 			_core->GetPath((int) pathType, &res);
 			AIMP36SDK::IAIMPString_ptr path(res, false);
 
@@ -235,7 +235,7 @@ namespace AIMP
 			{
 				this->_coreMessage = (AimpEventsDelegate^) Delegate::Remove(this->_coreMessage, onCoreMessage);
 				_nativeEventHelper->UnregisterCallback(*_coreMessageCallback);				
-				_nativeEventHelper = nullptr;
+				//_nativeEventHelper = nullptr;
 			}
 		}
 

@@ -5,6 +5,9 @@ using AIMP.SDK.Interfaces;
 
 namespace AIMP.SDK
 {
+    using System.Reflection;
+    using System.Security.Policy;
+
     /// <summary>
     /// 
     /// </summary>
@@ -159,14 +162,50 @@ namespace AIMP.SDK
                 { 
                     try
                     {
+                        //AppDomainSetup dmnSetup = new AppDomainSetup
+                        //{
+                        //    ApplicationName = PluginInfo.Name, 
+                        //    ApplicationBase = _inPathToAssembly.DirectoryName
+                        //};
+
+                        //// load aimp_dotnet assembly
+                        //PluginAppDomainInfo = AppDomain.CreateDomain(PluginInfo.Name + "_domain" + Guid.NewGuid().ToString().GetHashCode().ToString("x"), null, dmnSetup);
+
+                        //LoadedPlugin = (AimpPluginBase)PluginAppDomainInfo.CreateInstanceFromAndUnwrap(_inPathToAssembly.FullName, PluginClassName);
+                        AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+                            {
+                                string projectDir = _inPathToAssembly.Directory.FullName;
+                                string shortAssemblyName = args.Name.Substring(0, args.Name.IndexOf(','));
+                                string fileName = Path.Combine(projectDir, shortAssemblyName + ".dll");
+                                if (File.Exists(fileName))
+                                {
+                                    Assembly result = Assembly.LoadFrom(fileName);
+                                    return result;
+                                }
+
+                                return Assembly.GetExecutingAssembly().FullName == args.Name ? Assembly.GetExecutingAssembly() : null;
+                            };
+
+                        Type LoadStrategyType = typeof(AssemblyScanPluginLoadStrategy);
+
                         AppDomainSetup dmnSetup = new AppDomainSetup
                         {
-                            ApplicationName = PluginInfo.Name, 
-                            ApplicationBase = _inPathToAssembly.DirectoryName
+                            ApplicationBase = _inPathToAssembly.Directory.Parent.FullName
                         };
-
+                        
                         PluginAppDomainInfo = AppDomain.CreateDomain(PluginInfo.Name + "_domain" + Guid.NewGuid().ToString().GetHashCode().ToString("x"), null, dmnSetup);
+
+
+                        
+
                         LoadedPlugin = (AimpPluginBase)PluginAppDomainInfo.CreateInstanceFromAndUnwrap(_inPathToAssembly.FullName, PluginClassName);
+
+                        var l = PluginAppDomainInfo.GetAssemblies();
+
+
+                        //PluginAppDomainInfo.Load(AssemblyName.GetAssemblyName(@"z:\Code\aimp_dotnet\Aimp\AIMP3.60\Plugins\aimp_dotnet\aimp_dotnet.dll"));
+                        //PluginLoadingStrategy strat = (PluginLoadingStrategy)PluginAppDomainInfo.CreateInstanceFromAndUnwrap(Assembly.GetExecutingAssembly().FullName, LoadStrategyType.FullName);
+                        //PluginShortInfoForLoad[] res = strat.Load(_inPathToAssembly.DirectoryName);
                     }
                     catch (Exception ex)
                     {
@@ -178,7 +217,7 @@ namespace AIMP.SDK
 
                         LoadedPlugin = null;
 #if DEBUG
-                        System.Windows.Forms.MessageBox.Show(ex.Message);
+                        System.Windows.Forms.MessageBox.Show(ex.ToString());
 #endif
                     }
                 }
@@ -188,6 +227,7 @@ namespace AIMP.SDK
                     try
                     { 
                         asm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(o => o.FullName == PluginAssemblyName);
+                        System.Diagnostics.Debug.WriteLine(AppDomain.CurrentDomain.FriendlyName);
                     }
                     catch (Exception ex)
                     {
@@ -240,9 +280,10 @@ namespace AIMP.SDK
                     {
                         PluginLoadEvent(this);
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         System.Diagnostics.Debugger.Break();
+                        System.Diagnostics.Debug.WriteLine(ex.ToString());
                         Unload();
                     }
                 }

@@ -463,11 +463,12 @@ namespace AIMP
 	private ref class AIMPControllerInitializer : public System::MarshalByRefObject
 	{
 	public:
-		static String^ TypeName = "";
+		static String^ TypeName = "AIMP.AIMPControllerInitializer";
 
-		AimpPlayer<StaticSingleThreadAllocator>^ CreateWithStaticAllocator(AIMP::SDK360::ManagedAimpCore^ Ctrl, int PlgUID, int AppDomainID, bool CrossDmn/*, CentralizedEventController^ evCtrl*/)
+		AimpPlayer<StaticSingleThreadAllocator>^ CreateWithStaticAllocator(AIMP36SDK::IAIMPCore* core, int PlgUID, int AppDomainID, bool CrossDmn)
 		{
-			return gcnew AimpPlayer<StaticSingleThreadAllocator>(Ctrl, PlgUID, AppDomainID, CrossDmn/*, evCtrl*/);
+			System::Diagnostics::Debug::WriteLine(System::AppDomain::CurrentDomain->FriendlyName);
+			return gcnew AimpPlayer<StaticSingleThreadAllocator>(gcnew AIMP::SDK360::ManagedAimpCore(core), PlgUID, AppDomainID, CrossDmn);
 		}
 	};
 }

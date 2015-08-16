@@ -29,15 +29,20 @@ public:
 	void PluginLoadEventReaction(AIMP::SDK::PluginInformation^ sender)
 	{
 		// Each plugin should has his own managed core instance
-		AIMP::SDK360::ManagedAimpCore ^managedCore = gcnew AIMP::SDK360::ManagedAimpCore(_core);
+		
 		AIMP::AimpPlayer<StaticSingleThreadAllocator>^ instance = nullptr;
 		if (sender->PluginAppDomainInfo != nullptr)
 		{
+			System::Diagnostics::Debug::WriteLine(System::AppDomain::CurrentDomain->FriendlyName);
 			AIMP::AIMPControllerInitializer^ controllerInitializer = (AIMP::AIMPControllerInitializer^)sender->PluginAppDomainInfo->CreateInstanceFromAndUnwrap(System::Reflection::Assembly::GetExecutingAssembly()->Location, AIMP::AIMPControllerInitializer::TypeName);
-			instance = controllerInitializer->CreateWithStaticAllocator(managedCore, sender->LoadedPlugin->PluginId, sender->PluginAppDomainInfo->Id, true);
+			instance = controllerInitializer->CreateWithStaticAllocator(_core, sender->LoadedPlugin->PluginId, sender->PluginAppDomainInfo->Id, true);
+			//instance = gcnew AIMP::AimpPlayer<StaticSingleThreadAllocator>(managedCore, sender->LoadedPlugin->PluginId, sender->PluginAppDomainInfo->Id, true);
 		}
 		else
+		{
+			AIMP::SDK360::ManagedAimpCore ^managedCore = gcnew AIMP::SDK360::ManagedAimpCore(_core);
 			instance = gcnew AIMP::AimpPlayer<StaticSingleThreadAllocator>(managedCore, sender->LoadedPlugin->PluginId, System::AppDomain::CurrentDomain->Id, false);
+		}
 
 		sender->Initialize(instance);
 	}

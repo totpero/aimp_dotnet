@@ -2,10 +2,9 @@
 
 #include "stdafx.h"
 #include "DotNetPlugin.h"
-#include "AIMP_SDK\aimp3_60_sdk.h"
 
 
-BOOL WINAPI AIMPPluginGetHeader(AIMP36SDK::IAIMPPlugin **Header)
+BOOL WINAPI AIMPPluginGetHeader(AIMPSDK::IAIMPPlugin **Header)
 {
 	*Header = new DotNetPlugin();
 	return true;

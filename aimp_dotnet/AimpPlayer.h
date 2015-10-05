@@ -2,7 +2,6 @@
 
 #include "DataConversion.h"
 #include <vcclr.h>
-#include "AIMP_SDK\aimp3_60_sdk.h"
 #include "AIMPPlugin.h"
 #include "ManagedAimpCore.h"
 #include "DataConversion.h"
@@ -46,9 +45,8 @@ namespace AIMP
 	{
 	private:
 		typedef DataConverter Converter;
-		AIMP36SDK::IAIMPMessageHook* aimp_message_hook_;
-		AIMP36SDK::IAIMPServicePlayer* _player;
-		
+		AIMPSDK::IAIMPMessageHook* aimp_message_hook_;
+		AIMPSDK::IAIMPServicePlayer* _player;
 		ManagedAimpCore ^_managedAimpCore;
 		IAimpCore ^_aimpCore;
 		AimpEventsDelegate^ _coreMessage;
@@ -61,7 +59,6 @@ namespace AIMP
 		IAimpPlayListManager ^_playListManager;
 		IAimpPlaybackQueueService ^_playbackQueueManager;
 		AimpPlayerState _state;
-
 		AimpStateChanged ^_onStateChanged;
 		EventHandler ^_onLanguageChanged;
 		EventHandler ^_onTrackChanged;
@@ -79,8 +76,8 @@ namespace AIMP
 			//_aimpCore = core;
 			//_managerCore = gcnew AIMP::SDK360::ManagedAimpCore(core, nullptr);
 			_managedAimpCore = core;
-			AIMP36SDK::IAIMPServicePlayer* ps;
-			((ManagedAimpCore^) _managedAimpCore)->GetService(AIMP36SDK::IID_IAIMPServicePlayer, reinterpret_cast<void**>(&ps));
+			IAIMPServicePlayer* ps;
+			((ManagedAimpCore^) _managedAimpCore)->GetService(IID_IAIMPServicePlayer, reinterpret_cast<void**>(&ps));
 			_player = ps;
 		}
 
@@ -209,9 +206,9 @@ namespace AIMP
 			return ((AIMP::SDK::AimpServicePlaybackQueue^)this->_playbackQueueManager)->RaiseCheckUrl(url);
 		}
 
-		virtual property AIMP36SDK::IAIMPServicePlayer* ServicePlayer
+		virtual property IAIMPServicePlayer* ServicePlayer
 		{
-			AIMP36SDK::IAIMPServicePlayer* get()
+			IAIMPServicePlayer* get()
 			{
 				return _player;
 			}
@@ -285,7 +282,7 @@ namespace AIMP
 		{
 			IAimpFileInfo^ get()
 			{
-				AIMP36SDK::IAIMPFileInfo* fi;
+				IAIMPFileInfo* fi;
 				_player->GetInfo(&fi);
 
 				if (fi == NULL)
@@ -478,7 +475,7 @@ namespace AIMP
 	public:
 		static String^ TypeName = "";
 
-		AimpPlayer<StaticSingleThreadAllocator>^ CreateWithStaticAllocator(AIMP::SDK360::ManagedAimpCore^ Ctrl, int PlgUID, int AppDomainID, bool CrossDmn/*, CentralizedEventController^ evCtrl*/)
+		AimpPlayer<StaticSingleThreadAllocator>^ CreateWithStaticAllocator(AIMP::SDK::ManagedAimpCore^ Ctrl, int PlgUID, int AppDomainID, bool CrossDmn/*, CentralizedEventController^ evCtrl*/)
 		{
 			return gcnew AimpPlayer<StaticSingleThreadAllocator>(Ctrl, PlgUID, AppDomainID, CrossDmn/*, evCtrl*/);
 		}

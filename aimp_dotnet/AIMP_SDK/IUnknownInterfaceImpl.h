@@ -2,9 +2,6 @@
 
 #include <Unknwn.h>
 
-namespace AIMP36SDK
-{
-
 //! Helper implements IUnknown interface.
 template <typename T>
 class IUnknownInterfaceImpl : public T
@@ -45,8 +42,5 @@ public:
     }
 
 private:
-
 	ULONG _LinkCounter;
 };
-
-} // namespace AIMP36SDK

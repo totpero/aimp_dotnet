@@ -1,5 +1,4 @@
 #pragma once
-#include "AIMP_SDK\aimp3_60_sdk.h"
 #include "ManagedAimpCore.h"
 #include "InternalLogger.h"
 #include <vcclr.h>
@@ -8,7 +7,6 @@ namespace AIMP
 {	
 	using namespace System;
 	using namespace AIMP::SDK;
-	using namespace AIMP36SDK;
 	using namespace AIMP::SDK::UI::MenuItem;
 
 	/// <summary>
@@ -21,7 +19,7 @@ namespace AIMP
 		static TObject* MakeObject(REFIID objectId)
 		{
 			TObject *obj = NULL;
-			if (!CheckResult(AIMP::SDK360::ManagedAimpCore::GetAimpCore()->CreateObject(objectId, (void**)&obj)))
+			if (!CheckResult(AIMP::SDK::ManagedAimpCore::GetAimpCore()->CreateObject(objectId, (void**)&obj)))
 			{ 
 				InternalLogger::Instance->Write("Unable create AIMP object with id: ");
 			}
@@ -47,11 +45,11 @@ namespace AIMP
 			strObject->SetData((PWCHAR)strDate, value->Length);
 			return strObject;
 		}
-				
+
 		static IAIMPMenuItem *CreateMenuItem(IAIMPCore *core)
 		{
 			IAIMPMenuItem *item;
-			if (!CheckResult(core->CreateObject(AIMP36SDK::IID_IAIMPMenuItem, (void**)&item)))
+			if (!CheckResult(core->CreateObject(IID_IAIMPMenuItem, (void**)&item)))
 			{
 				InternalLogger::Instance->Write("Unable create IAIMPMenuItem object");
 				return NULL;
@@ -62,7 +60,7 @@ namespace AIMP
 		static IAIMPAction *CreateActionItem(IAIMPCore *core)
 		{
 			IAIMPAction *newAction;
-			if (!CheckResult(core->CreateObject(AIMP36SDK::IID_IAIMPMenuItem, (void**)&newAction)))
+			if (!CheckResult(core->CreateObject(IID_IAIMPMenuItem, (void**)&newAction)))
 			{
 				InternalLogger::Instance->Write("Unable create IAIMPAction object");
 				return NULL;
@@ -93,7 +91,7 @@ namespace AIMP
 		/// <returns></returns>
 		static bool SetString(IAIMPPropertyList *propertyList, int propertyId, String ^value)
 		{
-			return SetObject(propertyList, propertyId, MakeAimpString(AIMP::SDK360::ManagedAimpCore::GetAimpCore(), value));
+			return SetObject(propertyList, propertyId, MakeAimpString(AIMP::SDK::ManagedAimpCore::GetAimpCore(), value));
 		}
 
 		/// <summary>
@@ -103,7 +101,7 @@ namespace AIMP
 		/// <param name="propertyId">The property identifier.</param>
 		/// <param name="value">The value.</param>
 		/// <returns></returns>
-		static bool SetObject(AIMP36SDK::IAIMPPropertyList *propertyList, int propertyId, IUnknown *value)
+		static bool SetObject(IAIMPPropertyList *propertyList, int propertyId, IUnknown *value)
 		{
 			if (!CheckResult(propertyList->SetValueAsObject(propertyId, value)))
 			{
@@ -319,10 +317,10 @@ namespace AIMP
 				int checked;
 				aimpMenuItem->GetValueAsInt32(AIMP_MENUITEM_PROPID_CHECKED, &checked);
 
-				AIMP36SDK::IAIMPString* idString;
-				AIMP36SDK::IAIMPString* nameString;
+				IAIMPString* idString;
+				IAIMPString* nameString;
 
-				CheckResult(aimpMenuItem->GetValueAsObject(AIMP_MENUITEM_PROPID_NAME, AIMP36SDK::IID_IAIMPString, (void**) &nameString));
+				CheckResult(aimpMenuItem->GetValueAsObject(AIMP_MENUITEM_PROPID_NAME, IID_IAIMPString, (void**) &nameString));
 
 				if (menuType == AIMP_MENUITEM_STYLE_CHECKBOX)
 				{
@@ -339,7 +337,7 @@ namespace AIMP
 					result = gcnew StandartMenuItem(gcnew String(nameString->GetData()));
 				}
 
-				if (CheckResult(aimpMenuItem->GetValueAsObject(AIMP_MENUITEM_PROPID_ID, AIMP36SDK::IID_IAIMPString, (void**) &idString)))
+				if (CheckResult(aimpMenuItem->GetValueAsObject(AIMP_MENUITEM_PROPID_ID, IID_IAIMPString, (void**) &idString)))
 				{
 					if (idString != NULL)
 					{
@@ -358,7 +356,7 @@ namespace AIMP
 		static System::Drawing::Bitmap^ GetBitmap(IAIMPImageContainer* imageContainer)
 		{
 			IAIMPImage* image;
-			if (!CheckResult(AIMP::SDK360::ManagedAimpCore::GetAimpCore()->CreateObject(IID_IAIMPImage, (void**)&image)))
+			if (!CheckResult(AIMP::SDK::ManagedAimpCore::GetAimpCore()->CreateObject(IID_IAIMPImage, (void**)&image)))
 			{
 				InternalLogger::Instance->Write("Unable get Bitmap");
 				return nullptr;
@@ -373,7 +371,7 @@ namespace AIMP
 			SIZE size;
 			if (CheckResult(image->GetSize(&size)))
 			{
-				image->SaveToFile(AIMP::ObjectHelper::MakeAimpString(AIMP::SDK360::ManagedAimpCore::GetAimpCore(), "d:\\temp.png"), AIMP36SDK::AIMP_IMAGE_FORMAT_PNG);
+				image->SaveToFile(AIMP::ObjectHelper::MakeAimpString(AIMP::SDK::ManagedAimpCore::GetAimpCore(), "d:\\temp.png"), AIMP_IMAGE_FORMAT_PNG);
 
 				if (size.cx == 0 || size.cy == 0)
 				{
@@ -383,13 +381,13 @@ namespace AIMP
 				System::Drawing::Bitmap^ bmp = gcnew System::Drawing::Bitmap(size.cx, size.cy);
 
 				IAIMPStream *stream;
-				AIMP::SDK360::ManagedAimpCore::GetAimpCore()->CreateObject(IID_IAIMPMemoryStream, (void**) &stream);
-				image->SaveToStream(stream, AIMP36SDK::AIMP_IMAGE_FORMAT_PNG);
+				AIMP::SDK::ManagedAimpCore::GetAimpCore()->CreateObject(IID_IAIMPMemoryStream, (void**) &stream);
+				image->SaveToStream(stream, AIMP_IMAGE_FORMAT_PNG);
 				if (stream->GetSize() > 0)
 				{
 					Int64 size = stream->GetSize();
 					unsigned char *buf = new unsigned char[size];
-					HRESULT r = stream->Seek(0, AIMP36SDK::AIMP_STREAM_SEEKMODE_FROM_BEGINNING);
+					HRESULT r = stream->Seek(0, AIMP_STREAM_SEEKMODE_FROM_BEGINNING);
 					r = stream->Read(buf, size);
 
 					System::IO::MemoryStream^ strm = gcnew System::IO::MemoryStream();

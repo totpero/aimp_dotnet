@@ -8,15 +8,15 @@ namespace AIMP
 	{
 		namespace PlayList
 		{
-			using namespace AIMP36SDK;
+			using namespace AIMPSDK;
 			using namespace AIMP::SDK::Services::PlayList;
 
 			AimpPlayListGroup::AimpPlayListGroup()
 			{
-				IAIMPPlaylistGroup *group = (AIMP36SDK::IAIMPPlaylistGroup*)AIMP::SDK360::ManagedAimpCore::QueryInterface(AIMP36SDK::IID_IAIMPPlaylistGroup);				
+				IAIMPPlaylistGroup *group = (IAIMPPlaylistGroup*)AIMP::SDK::ManagedAimpCore::QueryInterface(IID_IAIMPPlaylistGroup);
 			}
 
-			AimpPlayListGroup::AimpPlayListGroup(AIMP36SDK::IAIMPPlaylistGroup *item) : AimpObject(item)
+			AimpPlayListGroup::AimpPlayListGroup(IAIMPPlaylistGroup *item) : AimpObject(item)
 			{
 			}
 
@@ -69,7 +69,7 @@ namespace AIMP
 			{
 				if (_item == nullptr)
 				{
-					AIMP36SDK::IAIMPPlaylistItem *item;
+					IAIMPPlaylistItem *item;
 					InternalAimpObject->GetItem(index, IID_IAIMPPlaylistItem, (void**) &item);
 					_item = gcnew AimpPlayListItem(item);
 				}

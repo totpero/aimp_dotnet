@@ -1,9 +1,7 @@
 #pragma once
 #include ".\Services\PlayList\AimpPlayListItem.h"
-#include ".\AIMP_SDK\aimp3_60_sdk.h"
 #include "ManagedAimpCore.h"
 
-using namespace AIMP36SDK;
 using namespace AIMP::SDK;
 
 public class StaticSingleThreadAllocator 
@@ -77,7 +75,7 @@ private:
 };
 
 namespace AIMP
-{	
+{
 	public ref class DataConverter
 	{
 	private:

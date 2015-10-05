@@ -1,13 +1,12 @@
 #pragma once
-#include "..\..\AIMP_SDK\aimp3_60_sdk.h"
 #include "..\BaseManager.h"
 #include "AimpPlaybackQueueItem.h"
 
 namespace AIMP
 {
 	namespace SDK
-	{		
-		using namespace AIMP36SDK;
+	{
+		using namespace AIMPSDK;
 		using namespace AIMP::SDK;
 
 		using namespace AIMP::SDK::Services::PlayList;

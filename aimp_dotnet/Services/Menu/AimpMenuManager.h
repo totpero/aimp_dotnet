@@ -8,7 +8,7 @@
 
 namespace AIMP36SDK
 {
-	#include "..\..\AIMP_SDK\AIMP360\apiMenu.h"	
+	#include "..\..\AIMP_SDK\AIMP400\apiMenu.h"	
 }
 		
 namespace AIMP
@@ -17,7 +17,7 @@ namespace AIMP
 	{
 		using namespace AIMP::SDK::UI::MenuItem;
 		using namespace AIMP::SDK::Services::MenuManager;
-		using namespace AIMP::SDK360;
+		using namespace AIMP::SDK;
 
 		public ref class AimpMenuManager : public AimpBaseManager, public IAimpMenuManager
 		{
@@ -39,9 +39,9 @@ namespace AIMP
 			virtual MenuItem ^GetBuiltIn(ParentMenuType parentMenuType);
 
 		private:
-			AIMP36SDK::IAIMPServiceMenuManager* _aimpMenuManager;
+			IAIMPServiceMenuManager* _aimpMenuManager;
 
-			AIMP36SDK::IAIMPServiceActionManager* _aimpActionManager;
+			IAIMPServiceActionManager* _aimpActionManager;
 
 			void RegisterMenu(IAIMPMenuItem* parentMenuItem, MenuItem^ menuItem);
 

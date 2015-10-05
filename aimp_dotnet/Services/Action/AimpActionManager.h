@@ -9,7 +9,7 @@ namespace AIMP
 	{
 		using namespace AIMP::SDK::UI::ActionItem;
 		using namespace AIMP::SDK::Services::ActionManager;
-		using namespace AIMP::SDK360;
+		using namespace AIMP::SDK;
 
 		public ref class AimpActionManager : public AimpBaseManager, public IAimpActionManager
 		{
